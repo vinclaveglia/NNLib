@@ -199,6 +199,7 @@ void FeedForwardLayer::update_weights(float ni, Layer2* prev_layer){
             for(int j=0; j < num_of_inputs; j++){
 
             	if(l_act_function!= act_function::NDIM_SIGMOID)
+            		//prova
             		connections[i][j] = connections[i][j] - ni*delta[i]*prev_layer->out[j] ;
             	else
             		connections[i][j] = connections[i][j] - ni*delta_[i][j]*prev_layer->out[j] ;
