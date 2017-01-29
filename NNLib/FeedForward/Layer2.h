@@ -62,7 +62,9 @@ public:
     float* bias; //un bias weight per neurone
     float* out; //the output of the neuron after the activation function
     float* a; // the result of the moltiplication w*x
+
     float** a_; // a_i arrays for multidimensional sigmoid functions
+    float** bias_; // a bias arrays for each neuron [multidimensional sigmoid functions]
 
     float* error; //the output error (used in output layers for batch learning)
     float** delta_t; //experiment

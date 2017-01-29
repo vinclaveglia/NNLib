@@ -57,6 +57,10 @@ FeedForwardLayer::FeedForwardLayer(int num_of_neurons, int previous_layer_size, 
     this->delta_ = new float*[num_of_neurons];
     for(int i=0; i<num_of_neurons; i++)
     	this->delta_[i] = new float[num_of_inputs];
+
+    this->bias_ = new float*[num_of_neurons];
+    for(int i=0; i<num_of_neurons; i++)
+    	this->bias_[i] = new float[num_of_inputs];
 }
 
 
@@ -76,7 +80,12 @@ void FeedForwardLayer::randomInitialize(){
             //cout << connections[neuron][input] << endl;
         }
         //Initialize bias
-        bias[neuron] = (float)(rand()%100)/300;
+        if(l_act_function != act_function::NDIM_SIGMOID)
+        	 bias[neuron] = (float)(rand()%100)/300;
+        else
+			for(int j=0; j< num_of_inputs; j++)
+				bias_[neuron][j] = (float)(rand()%100)/300;
+
     }
 }
 
@@ -93,7 +102,7 @@ void FeedForwardLayer::forward(float* x_array){
 	            for(int j=0; j < num_of_inputs; j++){
 	                //cout << "a["<< i << "] = "<< a[i] << " + " << connections[i][j] << " * "<< x_array[j]<< endl;
 	                a[i] = a[i] + connections[i][j]*x_array[j];
-	                a_[i][j] = connections[i][j]*x_array[j]+bias[i];
+	                a_[i][j] = connections[i][j]*x_array[j] + bias_[i][j];
 	            }
 	            a[i] = a[i] + bias[i]; //si aggiunge solo il peso. l'output del neurone e' sempre 1
 	            out[i] = 0;
@@ -107,7 +116,7 @@ void FeedForwardLayer::forward(float* x_array){
 	            else
 	            	out[i] = activation(a[i]);
 
-	            //cout << "out["<<i<< "] = "<<out[i]<< endl;
+	            //cout << "Layer " << this->id << " out["<<i<< "] = "<<out[i]<< endl;
 	        }
 	//        for(int i=0; i<num_of_neurons; i++)
 	//            cout << " a["<< i <<"] = "<<a[i];
@@ -156,8 +165,10 @@ float* FeedForwardLayer::calculate_deltas(float* errors){
     //delta_i = (y^ - y) * f'(a_i)
 	float* delta_ = new float[num_of_neurons];
 	float err = 0;
+	//cout << "Output Layer deltas" <<  endl;
     for(int i=0; i<num_of_neurons; i++){
     	delta[i] = errors[i] * act_derivative(a[i]);
+    	//cout << i << ")" << delta[i]<<", " ;
     }
     return delta;
 }
@@ -171,23 +182,29 @@ float FeedForwardLayer::get_error(){
 }
 
 void FeedForwardLayer::backward(Layer2* next_layer/*Subsequent layer*/){
-    //Called by the hidden layer:
+    //Called by a hidden layer:
+
     //delta_j = sum_i(delta_i * w_ij) * f'(a_j)
     float aux;
     //neurons of the actual layer
     for(int k=0; k<num_of_neurons; k++){
+    	//cout << "Neuron "<< k << " ";
         aux = 0;
         for(int j=0; j < next_layer->num_of_neurons; j++){
             //aux = aux + next_layer->get_delta(i) * next_layer->in_weight(i,j);
             aux = aux + next_layer->delta[j] * next_layer->connections[j][k];
         }
-        if(l_act_function!= act_function::NDIM_SIGMOID)
+        if(l_act_function!= act_function::NDIM_SIGMOID){
         	delta[k] = aux *this->act_derivative(a[k]);
+        	//cout << k <<"] "<< delta[k]<<" ";
+        }
         else{
         	for(int h=0; h<num_of_inputs; h++){
         		delta_[k][h] = aux *this->act_derivative(a_[k],h);
+        		//cout << "["<< k <<", "<<h << "] "<< delta_[k][h] << " ";
         	}
         }
+        //cout << endl;
     }
 }
 
@@ -201,8 +218,10 @@ void FeedForwardLayer::update_weights(float ni, Layer2* prev_layer){
             	if(l_act_function!= act_function::NDIM_SIGMOID)
             		//prova
             		connections[i][j] = connections[i][j] - ni*delta[i]*prev_layer->out[j] ;
-            	else
+            	else{
             		connections[i][j] = connections[i][j] - ni*delta_[i][j]*prev_layer->out[j] ;
+            		bias_[i][j] = bias_[i][j] - ni*delta_[i][j];
+            	}
 
             }
             //bias weight update

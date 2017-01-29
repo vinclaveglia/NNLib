@@ -164,7 +164,7 @@ void testRegression(){
 
     NeuralNetwork rete;
     rete.setInputLayer(1);
-    rete.addLayer(30, act_function::SIGMOID);
+    rete.addLayer(30, act_function::NDIM_SIGMOID);
     //pushed branch branch branch
     rete.addLayer(1, act_function::LINEAR);
 

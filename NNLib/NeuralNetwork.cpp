@@ -160,14 +160,20 @@ void NeuralNetwork::train2(Dataset* dataset, Dataset* validation_set){
 
     	//Training Step
     	for(int i=0; i<dataset->size; i++){
+    	//for(int i=0; i<1; i++){
     		forward( dataset->features[i]);
+
+
 			error = cumulate_error( dataset->target[i]);
 			//calculate_deltas();
 			//calcola i delta sull'output layer
 			calculate_deltas(get_output_layer()->error);
 			//retropropaga
+
 			backward2();
+
 			//aggiorna i pesi
+
 			update_weights();
 			tr_error = tr_error + error;
     	}
@@ -175,17 +181,18 @@ void NeuralNetwork::train2(Dataset* dataset, Dataset* validation_set){
 
     	//Validation Step
     	error = 0;
-    	for(int i=0; i<validation_set->size; i++){
+    	/*for(int i=0; i<validation_set->size; i++){
     		forward( validation_set->features[i]);
 			error = cumulate_error( validation_set->target[i]);
 			val_error = val_error + error;
-    	}
+    	}*/
     	val_error = val_error / validation_set->size;
     	train_errors.push_back(tr_error);
     	val_errors.push_back(val_error);
     }
 
-    cout << "\n===== Trained with train 2 =====\n";
+    cout << "===== Trained with train 2 =====\n";
+
     ofstream train_err_file, val_err_file;
     train_err_file.open("training_error.txt");
     val_err_file.open("validation_error.txt");
@@ -196,6 +203,7 @@ void NeuralNetwork::train2(Dataset* dataset, Dataset* validation_set){
     }
     train_err_file.close();
     val_err_file.close();
+    cout << "End training v2 ...\n";
 }
 
 void NeuralNetwork::train(Dataset* dataset){

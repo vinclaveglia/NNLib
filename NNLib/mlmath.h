@@ -15,7 +15,7 @@ using namespace std;
 class MlMath{
 public:
     static float sigmoid(float x){
-
+    	//cout << x << endl;
         return  1/(1 + exp(-x));
     }
 
@@ -35,6 +35,11 @@ public:
     static float ndim_sigmoid(int dim, float* x){
     	//x is the n-dimemsional array
     	//dim is the array dimension
+    	//cout << "n_dim sigmoid: ";
+    	//for(int i=0; i<dim; i++)
+    		//cout << x[i] << " ";
+    	//cout << endl;
+
     	float den = 1;
     	for(int i=0; i<dim; i++){
 
@@ -45,13 +50,15 @@ public:
     }
 
     static float ndim_sigmoid_partial_der(int dim, float* x, int i){
-    	float num = sigmoid_derivative(x[i]);
-    	float den = 1;
+
+    	float sig_der = sigmoid_derivative(x[i]);
+    	float C = 1;
+
     	for(int j=0; j<dim; j++){
     		if(j!=i)
-    			den = den * (1+exp(-x[j]));
+    			C = C * sigmoid(x[j]);
     	}
-    	return num/den;
+    	return C*sig_der;
     }
 
     static float relu(float x){
