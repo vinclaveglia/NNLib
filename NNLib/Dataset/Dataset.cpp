@@ -12,6 +12,7 @@
 #include <vector>
 #include <cassert>
 #include <exception>
+#include <sstream>
 #include "Dataset.h"
 
 
@@ -74,16 +75,22 @@ Dataset::Dataset(float** features, float** target, int features_dim, int target_
 }
 
 void Dataset::load_dataset(std::string filepath, int features_dim, int target_dim, char delimiter){
+	//load the whole dataset in memory
 	vector<vector<float>> dataset = this->load_(filepath, delimiter);
 	vector<vector<float>> features;
 	vector<vector<float>> target;
 
 	for(vector<float> row: dataset){
+
 		vector<float> tmp_f (row.begin(), row.begin()+features_dim);
+
 		features.push_back(tmp_f);
+
 		vector<float> tmp_t (row.begin()+features_dim, row.end());
+
 		target.push_back(tmp_t);
 	}
+
 	this->features_dim = features[0].size();
 	this->target_dim = target[0].size();
 

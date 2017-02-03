@@ -181,11 +181,11 @@ void NeuralNetwork::train2(Dataset* dataset, Dataset* validation_set){
 
     	//Validation Step
     	error = 0;
-    	/*for(int i=0; i<validation_set->size; i++){
+    	for(int i=0; i<validation_set->size; i++){
     		forward( validation_set->features[i]);
 			error = cumulate_error( validation_set->target[i]);
 			val_error = val_error + error;
-    	}*/
+    	}
     	val_error = val_error / validation_set->size;
     	train_errors.push_back(tr_error);
     	val_errors.push_back(val_error);
@@ -332,12 +332,12 @@ void NeuralNetwork::train(float** dataset){
 	cout << "Training not implementes yet" << endl;
 }
 
-void NeuralNetwork::initialize(){
+void NeuralNetwork::initialize(float scale_factor){
     cout << "Initializing network..." << endl;
     for(Layer2* layer : layer_list){
     	if(!layer->isInputLayer){
     		cout << "Initializing layer "<<layer->id<< " ...\n";
-			layer->randomInitialize();
+			layer->randomInitialize(scale_factor);
 			cout << "Layer "<<layer->id<< " initialized\n";
     	}
     }

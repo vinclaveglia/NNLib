@@ -18,7 +18,7 @@ public:
 
     FeedForwardLayer(int num_of_neurons, int previous_layer_size, int layer_id, std::string act_function);
 
-    void randomInitialize() override; //to do
+    void randomInitialize(float scal_factor) override; //to do
 
     void forward(float* x_array) override; //to do
 

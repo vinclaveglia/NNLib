@@ -138,6 +138,36 @@ void vae(){
 	}
 }
 
+void testMultidimRegression(){
+    char SEP = ' ';
+    int FEATURE_DIM = 3;
+    int TARGET_DIM = 2;
+
+	Dataset dataset;
+	dataset.load_dataset("./Data/x1x2x3_y1y2.txt" , FEATURE_DIM,  TARGET_DIM, SEP);
+	dataset.print_dataset();
+    Dataset *training = dataset.from_to(0, dataset.size*0.8);
+    Dataset *validation = dataset.from_to(dataset.size*0.8, dataset.size*0.9);
+    Dataset *testing = dataset.from_to(dataset.size*0.9, dataset.size);
+
+    NeuralNetwork rete;
+    rete.setInputLayer(5);
+
+    //rete.addLayer(6, act_function::SIGMOID);
+    rete.addLayer(13, act_function::NDIM_SIGMOID);
+
+    rete.addLayer(2, act_function::NDIM_SIGMOID);
+
+    //rete.setLearningRate(0.01);
+    rete.setLearningRate(0.08);
+    rete.setEpochs(100);
+    rete.initialize(10); //di default sono in millesimi
+
+    rete.train2(training, validation);
+
+    cout << "Finish" << endl;
+}
+
 void testRegression(){
     Dataset dataset;
     Dataset dataset_to_test;
@@ -211,7 +241,9 @@ int main() {
 	srand(1);
     //testMLP();
 	//test_simple_mlp();
-	testRegression();
+	//testRegression();
+	testMultidimRegression();
+
 	//testDatasetShuffle();
 
     cout << "===== This is NNLib! =====" << endl;

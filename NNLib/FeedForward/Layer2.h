@@ -14,7 +14,7 @@ public:
     //Layer2(int num_of_neurons, int previous_layer_size, int id_layer, std::string act_function);
 
     //strettamente legato alla istanza di layer
-    virtual void randomInitialize()=0;
+    virtual void randomInitialize(float scale_factor)=0;
 
     //strettamente legato alla istanza di layer
     virtual void forward(float* x_array) = 0;

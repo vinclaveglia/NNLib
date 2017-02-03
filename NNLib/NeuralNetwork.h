@@ -34,7 +34,7 @@ public:
 
     float output_error();
 
-    void initialize();
+    void initialize(float scale_factor = 1);
     void setInputLayer(int num_of_neurons);
 
     void addLayer(int num_of_neurons, string act_function);
